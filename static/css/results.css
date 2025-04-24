@@ -1,0 +1,545 @@
+/* Additional CSS for improved results display */
+
+/* Results Section Styling */
+.results-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.results-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.metric {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    min-width: 120px;
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.metric:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.results-visualization {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.results-visualization img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+}
+
+.results-insights, 
+.results-recommendations {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.results-insights h4, 
+.results-recommendations h4 {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.results-insights ul, 
+.results-recommendations ul {
+    margin-bottom: 0;
+}
+
+.results-insights li, 
+.results-recommendations li {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+/* Full Analysis Display */
+.full-analysis-toggle {
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+.full-analysis {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    margin-top: var(--spacing-md);
+}
+
+.full-analysis h4 {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.full-analysis-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.full-analysis-content h5 {
+    color: var(--primary-color);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+}
+
+.full-analysis-content p {
+    margin-bottom: var(--spacing-md);
+}
+
+.full-analysis-content .list-item {
+    padding-left: var(--spacing-md);
+    position: relative;
+}
+
+.full-analysis-content .list-item:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+/* Question and Answer Styling */
+.question-answer {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.question {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.answer {
+    color: var(--text-secondary);
+}
+
+/* Interactive Elements */
+.interactive-chart {
+    height: 300px;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-controls {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-sm);
+}
+
+/* Comparison View */
+.comparison-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.comparison-item {
+    flex: 1;
+    min-width: 300px;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.comparison-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.comparison-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.comparison-value {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Timeline View */
+.timeline-container {
+    position: relative;
+    padding: var(--spacing-lg) 0;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background-color: var(--border-color);
+}
+
+.timeline-event {
+    position: relative;
+    padding-left: 50px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 11px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-round);
+    background-color: var(--primary-color);
+}
+
+.timeline-content {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+}
+
+.timeline-time {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.timeline-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.timeline-description {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* Heat Map Visualization */
+.heatmap-container {
+    position: relative;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.heatmap-field {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-color: rgba(0, 100, 0, 0.2);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heatmap-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 30% 70%, rgba(255, 0, 0, 0.5) 0%, rgba(255, 0, 0, 0) 50%),
+                      radial-gradient(circle at 70% 30%, rgba(255, 0, 0, 0.5) 0%, rgba(255, 0, 0, 0) 50%),
+                      radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0) 70%);
+    border-radius: var(--radius-md);
+}
+
+.field-markings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.field-center-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+.field-center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+}
+
+.field-halfway-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Player Position Visualization */
+.player-positions {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-color: rgba(0, 100, 0, 0.2);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: var(--spacing-lg);
+}
+
+.player-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.player-marker.team-a {
+    background-color: var(--primary-color);
+}
+
+.player-marker.team-b {
+    background-color: var(--secondary-color);
+}
+
+.player-connection {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.2);
+    height: 1px;
+    transform-origin: 0 0;
+}
+
+/* Formation Visualization */
+.formation-visualization {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: rgba(0, 100, 0, 0.2);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.formation-half {
+    flex: 1;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.formation-half:last-child {
+    border-bottom: none;
+}
+
+.formation-title {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+}
+
+/* Tactical Analysis Visualization */
+.tactical-visualization {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.tactical-stat {
+    flex: 1;
+    min-width: 200px;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.tactical-stat-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.tactical-stat-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tactical-stat-value {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.tactical-stat-bar {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+}
+
+.tactical-stat-progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: var(--radius-sm);
+}
+
+.tactical-stat-teams {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Animation for results loading */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.results-section {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.metric:nth-child(1) { animation-delay: 0.1s; }
+.metric:nth-child(2) { animation-delay: 0.2s; }
+.metric:nth-child(3) { animation-delay: 0.3s; }
+
+.results-visualization {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.4s;
+}
+
+.results-insights, 
+.results-recommendations {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.5s;
+}
+
+/* Loading indicator for AI processing */
+.ai-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.ai-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(74, 107, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-md);
+}
+
+.ai-loading-text {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.ai-loading-subtext {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: var(--spacing-sm);
+}
+
+/* Responsive adjustments for results display */
+@media (max-width: 768px) {
+    .comparison-view {
+        flex-direction: column;
+    }
+    
+    .timeline-event {
+        padding-left: 40px;
+    }
+    
+    .tactical-visualization {
+        flex-direction: column;
+    }
+}
