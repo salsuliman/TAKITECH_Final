@@ -14,7 +14,7 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key')  # Change in production
 
 # API keys from environment variables
-GOOGLE_API_KEY = "AIzaSyBh9hNf-GAGnsbKTYhzb3kZ_5PxpFX6jCY"
+GOOGLE_API_KEY = "YOUR_API_KEY"
 
 # Configuration
 UPLOAD_FOLDER = './uploads'
