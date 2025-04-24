@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation Analysis | TakiTech</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        /* Modern tech-focused styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4a6bff, #6c5ce7);
+            --secondary-gradient: linear-gradient(135deg, #00b894, #00cec9);
+            --accent-gradient: linear-gradient(135deg, #ff7675, #d63031);
+            --dark-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --primary-color: #4a6bff;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* NEW ANIMATED BACKGROUND */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(74, 107, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+        
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) translateZ(-100px);
+            animation: grid-movement 20s linear infinite;
+        }
+        
+        @keyframes grid-movement {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+        
+        .glow-sphere {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.2) 0%, rgba(74, 107, 255, 0.1) 40%, rgba(74, 107, 255, 0) 70%);
+            filter: blur(30px);
+            opacity: 0.6;
+            animation: sphere-float 15s ease-in-out infinite;
+        }
+        
+        @keyframes sphere-float {
+            0% { transform: translate(10%, 20%) scale(1); }
+            50% { transform: translate(40%, 40%) scale(1.5); }
+            100% { transform: translate(10%, 20%) scale(1); }
+        }
+        
+        .nebula-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M25,50 C25,37.5 37.5,25 50,25 C62.5,25 75,37.5 75,50 C75,62.5 62.5,75 50,75 C37.5,75 25,62.5 25,50 Z" stroke="rgba(74, 107, 255, 0.1)" stroke-width="0.5" fill="none"/></svg>');
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        
+        .warp-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .warp-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(74, 107, 255, 0.5), transparent);
+            opacity: 0;
+            animation: warp 8s linear infinite;
+        }
+        
+        @keyframes warp {
+            0% {
+                transform: translateY(100vh) scaleX(0.1);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.5;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) scaleX(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Enhanced card effects */
+        .card-3d, .feature-card, .step, .sample-result, .sample-match {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-3d::before, .feature-card::before, .step::before, .sample-result::before, .sample-match::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.1) 0%, rgba(74, 107, 255, 0) 70%);
+            transform: rotate(0deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .card-3d:hover, .feature-card:hover, .step:hover, .sample-result:hover, .sample-match:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .card-3d:hover::before, .feature-card:hover::before, .step:hover::before, .sample-result:hover::before, .sample-match:hover::before {
+            opacity: 1;
+            animation: card-glow 5s infinite linear;
+        }
+        
+        @keyframes card-glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        
+        /* Navigation styles */
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .nav-logo a {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-text {
+            color: var(--primary-color);
+        }
+        
+        .logo-tech {
+            color: var(--text-primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6c5ce7, #4a6bff);
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-text {
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-text:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main content styles */
+        .main-content {
+            padding-top: 80px;
+        }
+        
+        /* Tool section styles with enhanced design */
+        .tool-section {
+            padding: 4rem 0;
+        }
+        
+        .tool-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .tool-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .formation-analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .formation-input {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .input-section, .sample-matches {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+
+        .input-section h3, .sample-matches h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .sample-match {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .match-teams {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .team-name {
+            font-weight: 600;
+        }
+        
+        .vs {
+            margin: 0 0.5rem;
+            color: var(--text-secondary);
+        }
+
+                /* anywhere in your CSS or inside your <style> block */
+        .full-analysis-content {
+        /* force one column */
+        column-count: 1 !important;
+        column-gap:   0 !important;
+        /* preserve your line‑breaks */
+        white-space:  pre-wrap;
+        }
+
+        
+        .match-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+                
+        .analysis-results {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: rgba(30, 41, 59, 0.85);
+        border-radius: 12px;
+        max-height: 600px;
+        overflow-y: auto;
+        }
+
+        .analysis-results h3 {
+        margin: 0;
+        color: var(--primary-gradient);
+        font-size: 1.75rem;
+        text-align: center;
+        }
+
+        .analysis-results .results-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        }
+
+        .analysis-results .results-text {
+        line-height: 1.6;
+        color: var(--text-secondary);
+        }
+
+        .analysis-results .results-text p {
+        margin-bottom: 1rem;
+        }
+
+        .analysis-results .results-text ul {
+        margin: 0 0 1rem 1.5rem;
+        }
+
+        .analysis-results .results-text li {
+        margin-bottom: 0.5rem;
+        }
+
+                
+        /* Features section */
+        .features-section {
+            padding: 4rem 0;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+        
+        /* How it works section */
+        .how-it-works-section {
+            padding: 4rem 0;
+        }
+        
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            padding: 2rem;
+        }
+        
+        .step-number {
+            background: var(--primary-gradient);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+        }
+        
+        /* Sample results section */
+        .sample-results-section {
+            padding: 4rem 0;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .sample-results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .sample-result {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sample-result h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .sample-image {
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .sample-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .sample-text p {
+            color: var(--text-secondary);
+        }
+        
+        /* Footer */
+        .app-footer {
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 3rem 0 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-social {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .footer-social a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-social a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .demo-form {
+            text-align: left;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .formation-analysis-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-social {
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tool-header h2, .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .features-grid, .steps-container, .sample-results-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .glow-sphere {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- New 3D Animated Background -->
+    <div class="animated-background">
+        <div class="particle-container" id="particles"></div>
+        <div class="grid-lines"></div>
+        <div class="glow-sphere" style="top: 20%; left: 10%;"></div>
+        <div class="glow-sphere" style="top: 60%; left: 70%; animation-delay: -7s;"></div>
+        <div class="nebula-effect"></div>
+        <div class="warp-lines" id="warp-lines"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}"><span class="logo-text">Taki</span><span class="logo-tech">Tech</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('video_analysis') }}">Video Analysis</a></li>
+                <li><a href="{{ url_for('formation_analysis') }}" class="active">Formation Analysis</a></li>
+                <li><a href="{{ url_for('chat_assistant') }}">AI Assistant</a></li>
+                <li><a href="{{ url_for('index') }}#about">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="demo-btn" class="btn btn-primary">Request Demo</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Formation Analysis Tool (Starts directly with analysis) -->
+            <section class="tool-section">
+                <div class="tool-container">
+                    <div class="tool-header" data-aos="fade-up">
+                        <h2>Analyze Team Formations</h2>
+                        <p>Our AI analyzes formation data to provide tactical insights and recommendations</p>
+                    </div>
+                    
+                    <div class="formation-analysis-container" data-aos="fade-up" data-aos-delay="100">
+                        <div class="formation-input">
+                            <div class="input-section card-3d">
+                                <h3>Match Selection</h3>
+                                <div class="form-group">
+                                    <label for="match-id">Match ID</label>
+                                    <input type="text" id="match-id" value="J03WMX" placeholder="Enter match ID">
+                                </div>
+                                <div class="form-group">
+                                    <label for="period-id">Period</label>
+                                    <select id="period-id">
+                                        <option value="1" selected>First Half</option>
+                                        <option value="2">Second Half</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="data-limit">Data Points</label>
+                                    <select id="data-limit">
+                                        <option value="1000">1,000 points</option>
+                                        <option value="5000" selected>5,000 points</option>
+                                        <option value="10000">10,000 points</option>
+                                        <option value="20000">20,000 points</option>
+                                    </select>
+                                </div>
+                                <button id="run-formation-analysis" class="btn btn-primary">Analyze Formation</button>
+                            </div>
+                            
+                            <div class="sample-matches card-3d">
+                                <h3>Sample Matches</h3>
+                                <div class="sample-match-list">
+                                    <div class="sample-match" data-match-id="J03WMX">
+                                        <div class="match-teams">
+                                            <span class="team-name">Arsenal</span>
+                                            <span class="vs">vs</span>
+                                            <span class="team-name">Chelsea</span>
+                                        </div>
+                                        <div class="match-date">Premier League - April 20, 2025</div>
+                                        <button class="btn btn-text">Use This Match</button>
+                                    </div>
+                                    
+                                    <div class="sample-match" data-match-id="K15TYZ">
+                                        <div class="match-teams">
+                                            <span class="team-name">Barcelona</span>
+                                            <span class="vs">vs</span>
+                                            <span class="team-name">Real Madrid</span>
+                                        </div>
+                                        <div class="match-date">La Liga - April 15, 2025</div>
+                                        <button class="btn btn-text">Use This Match</button>
+                                    </div>
+                                    
+                                    <div class="sample-match" data-match-id="L27QRS">
+                                        <div class="match-teams">
+                                            <span class="team-name">Bayern Munich</span>
+                                            <span class="vs">vs</span>
+                                            <span class="team-name">Dortmund</span>
+                                        </div>
+                                        <div class="match-date">Bundesliga - April 10, 2025</div>
+                                        <button class="btn btn-text">Use This Match</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="formation-results" class="analysis-results">
+                            <div class="full-analysis-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Taki</span><span class="logo-tech">Tech</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="{{ url_for('video_analysis') }}">Video Analysis</a></li>
+                            <li><a href="{{ url_for('formation_analysis') }}">Formation Analysis</a></li>
+                            <li><a href="{{ url_for('chat_assistant') }}">AI Assistant</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="{{ url_for('index') }}#about">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TakiTech. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- Demo Modal -->
+        <div id="demo-modal" class="modal">
+            <div class="modal-content card-3d">
+                <span class="close-modal">&times;</span>
+                <div class="modal-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Request a Demo</h3>
+                <form id="demo-form" class="demo-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="team" name="team" placeholder="Team/Organization">
+                    </div>
+                    <div class="form-group">
+                        <select id="interest" name="interest">
+                            <option value="video">Video Analysis</option>
+                            <option value="formation" selected>Formation Analysis</option>
+                            <option value="ai">AI Assistant</option>
+                            <option value="all">All Features</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Request Demo</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing...</div>
+        </div>
+
+        <!-- Alerts Container -->
+        <div id="alerts-container" class="alerts-container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Animated background + AOS initialization (keep your existing code)
+        createAnimatedBackground();
+        AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+
+        // Demo modal handlers (keep as-is)
+        const demoBtn = document.getElementById('demo-btn');
+        const demoModal = document.getElementById('demo-modal');
+        const closeModal = document.querySelector('.close-modal');
+        demoBtn.addEventListener('click', () => demoModal.style.display = 'flex');
+        closeModal.addEventListener('click', () => demoModal.style.display = 'none');
+        window.addEventListener('click', e => { if (e.target===demoModal) demoModal.style.display='none'; });
+
+        // Sample match selection (keep as-is)
+        document.querySelectorAll('.sample-match').forEach(match => {
+          match.addEventListener('click', function() {
+            document.getElementById('match-id').value = this.dataset.matchId;
+            document.querySelectorAll('.sample-match').forEach(m => m.style.borderColor='var(--border-color)');
+            this.style.borderColor = 'var(--primary-color)';
+          });
+        });
+
+        // 3D card hover effect (keep as-is)
+        document.querySelectorAll('.card-3d, .feature-card, .step, .sample-result, .sample-match')
+          .forEach(card => {
+            card.addEventListener('mousemove', e => {
+              const r = card.getBoundingClientRect();
+              const rotateX = (e.clientY - r.top - r.height/2)/20;
+              const rotateY = (r.left + r.width/2 - e.clientX)/20;
+              card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+              card.style.transform = '';
+              setTimeout(() => card.style.transform = 'translateY(-5px)', 50);
+            });
+          });
+
+
+        document
+        .getElementById('run-formation-analysis')
+        .addEventListener('click', runFormationAnalysis);
+
+      });
+        
+        // Function to create the animated background
+        function createAnimatedBackground() {
+            // Create particles
+            const particleContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // Random opacity
+                particle.style.opacity = (Math.random() * 0.5 + 0.1).toString();
+                
+                // Animation
+                const duration = Math.random() * 20 + 20;
+                const delay = Math.random() * 10;
+                
+                // Apply animation with keyframes dynamically
+                const style = document.createElement('style');
+                const endX = Math.random() * 20 - 10;
+                const endY = Math.random() * 20 - 10;
+                
+                style.textContent = `
+                    @keyframes particle-float-${i} {
+                        0% { transform: translate(0, 0) scale(1); }
+                        50% { transform: translate(${endX}px, ${endY}px) scale(${Math.random() * 0.5 + 0.8}); }
+                        100% { transform: translate(${-endX}px, ${-endY}px) scale(1); }
+                    }
+                `;
+                
+                particle.style.animation = `particle-float-${i} ${duration}s ease-in-out ${delay}s infinite alternate`;
+                
+                document.head.appendChild(style);
+                particleContainer.appendChild(particle);
+            }
+            
+            // Create warp lines
+            const warpLinesContainer = document.getElementById('warp-lines');
+            const warpLineCount = 20;
+            
+            for (let i = 0; i < warpLineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('warp-line');
+                
+                // Random width between 30% and 80% of screen width
+                const width = Math.random() * 50 + 30;
+                line.style.width = `${width}%`;
+                
+                // Random position
+                const posX = Math.random() * (100 - width);
+                line.style.left = `${posX}%`;
+                
+                // Animation delay
+                const delay = Math.random() * 8;
+                line.style.animationDelay = `${delay}s`;
+                
+                warpLinesContainer.appendChild(line);
+            }
+        }
+    </script>
+</body>
+</html>
+

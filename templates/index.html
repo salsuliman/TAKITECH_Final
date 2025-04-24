@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TakiTech | AI-Powered Football Analytics</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        /* Modern tech-focused styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4a6bff, #6c5ce7);
+            --secondary-gradient: linear-gradient(135deg, #00b894, #00cec9);
+            --accent-gradient: linear-gradient(135deg, #ff7675, #d63031);
+            --dark-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --primary-color: #4a6bff;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* NEW ANIMATED BACKGROUND */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(74, 107, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+        
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) translateZ(-100px);
+            animation: grid-movement 20s linear infinite;
+        }
+        
+        @keyframes grid-movement {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+        
+        .glow-sphere {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.2) 0%, rgba(74, 107, 255, 0.1) 40%, rgba(74, 107, 255, 0) 70%);
+            filter: blur(30px);
+            opacity: 0.6;
+            animation: sphere-float 15s ease-in-out infinite;
+        }
+        
+        @keyframes sphere-float {
+            0% { transform: translate(10%, 20%) scale(1); }
+            50% { transform: translate(40%, 40%) scale(1.5); }
+            100% { transform: translate(10%, 20%) scale(1); }
+        }
+        
+        .nebula-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M25,50 C25,37.5 37.5,25 50,25 C62.5,25 75,37.5 75,50 C75,62.5 62.5,75 50,75 C37.5,75 25,62.5 25,50 Z" stroke="rgba(74, 107, 255, 0.1)" stroke-width="0.5" fill="none"/></svg>');
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        
+        .warp-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .warp-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(74, 107, 255, 0.5), transparent);
+            opacity: 0;
+            animation: warp 8s linear infinite;
+        }
+        
+        @keyframes warp {
+            0% {
+                transform: translateY(100vh) scaleX(0.1);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.5;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) scaleX(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Enhanced card effects */
+        .card-3d {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-3d::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.1) 0%, rgba(74, 107, 255, 0) 70%);
+            transform: rotate(0deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .card-3d:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .card-3d:hover::before {
+            opacity: 1;
+            animation: card-glow 5s infinite linear;
+        }
+        
+        @keyframes card-glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hero section with enhanced effect */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+        
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(74, 107, 255, 0.5);
+            transition: all 0.5s ease;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(74, 107, 255, 0.2), transparent);
+            z-index: 1;
+        }
+        
+        /* Demo options with hover effect */
+        .demo-option {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.5s ease;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .demo-option:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: var(--primary-color);
+        }
+        
+        /* Rest of your existing styles */
+        .hero-logo {
+            position: relative;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+            display: inline-block;
+        }
+        
+        .hero-logo-img {
+            height: 80px;
+            width: auto;
+            filter: drop-shadow(0 0 15px rgba(74, 107, 255, 0.8));
+            transform-style: preserve-3d;
+            animation: heroLogoFloat 8s infinite ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-logo::before,
+        .hero-logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: var(--primary-color);
+            opacity: 0.15;
+            border-radius: 40%;
+            z-index: 1;
+        }
+        
+        .hero-logo::before {
+            animation: heroLogoBefore 12s infinite linear;
+            background: linear-gradient(45deg, var(--primary-color), #6c5ce7);
+        }
+        
+        .hero-logo::after {
+            animation: heroLogoAfter 10s infinite linear;
+            background: linear-gradient(-45deg, #00b894, var(--primary-color));
+        }
+        
+        .hero-logo-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: white;
+            z-index: 3;
+            filter: blur(1px);
+            opacity: 0;
+        }
+        
+        .hero-logo-sparkle:nth-child(1) { top: 20%; left: 10%; animation: sparkle 3s infinite 0.2s; }
+        .hero-logo-sparkle:nth-child(2) { top: 15%; left: 70%; animation: sparkle 3s infinite 0.5s; }
+        .hero-logo-sparkle:nth-child(3) { top: 60%; left: 80%; animation: sparkle 3s infinite 0.8s; }
+        .hero-logo-sparkle:nth-child(4) { top: 75%; left: 25%; animation: sparkle 3s infinite 1.1s; }
+        .hero-logo-sparkle:nth-child(5) { top: 40%; left: 90%; animation: sparkle 3s infinite 1.4s; }
+        
+        .hero-logo-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%);
+            mix-blend-mode: overlay;
+            opacity: 0;
+            z-index: 3;
+            animation: logoEffect 4s infinite alternate ease-in-out;
+        }
+        
+        .hero-logo:hover .hero-logo-img {
+            animation-play-state: paused;
+            transform: rotateY(15deg) scale(1.1);
+            filter: drop-shadow(0 0 25px rgba(74, 107, 255, 1)) brightness(1.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .hero-logo:hover::before,
+        .hero-logo:hover::after {
+            animation-play-state: paused;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+        
+        .hero-logo:hover .hero-logo-effect {
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+        
+        @keyframes heroLogoFloat {
+            0% { transform: translateY(0) rotateY(0deg); }
+            25% { transform: translateY(-8px) rotateY(5deg); }
+            50% { transform: translateY(0) rotateY(0deg); }
+            75% { transform: translateY(8px) rotateY(-5deg); }
+            100% { transform: translateY(0) rotateY(0deg); }
+        }
+        
+        @keyframes heroLogoBefore {
+            0% { transform: rotate(0deg) scale(0.8); border-radius: 40%; }
+            50% { transform: rotate(180deg) scale(1.2); border-radius: 50%; }
+            100% { transform: rotate(360deg) scale(0.8); border-radius: 40%; }
+        }
+        
+        @keyframes heroLogoAfter {
+            0% { transform: rotate(0deg) scale(1.2); border-radius: 40%; }
+            50% { transform: rotate(-180deg) scale(0.8); border-radius: 60%; }
+            100% { transform: rotate(-360deg) scale(1.2); border-radius: 40%; }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+        
+        @keyframes logoEffect {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 0.4; transform: scale(1.1); }
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .btn-glow:hover::after {
+            opacity: 1;
+        }
+        
+        /* Demo options section */
+        .demo-options-section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-logo {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .section-logo-img {
+            height: 35px;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(74, 107, 255, 0.7));
+            transform: translateZ(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: sectionLogoPulse 5s infinite alternate ease-in-out;
+        }
+        
+        .section-logo:hover .section-logo-img {
+            transform: scale(1.15) translateZ(30px);
+            filter: drop-shadow(0 0 20px rgba(74, 107, 255, 1));
+        }
+        
+        .demo-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .demo-option-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* How it works section */
+        .how-it-works-section {
+            padding: 80px 0;
+        }
+        
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: var(--primary-gradient);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        /* Testimonials section */
+        .testimonials-section {
+            padding: 80px 0;
+        }
+        
+        .testimonials-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            margin-right: 1rem;
+        }
+        
+        /* About section */
+        .about-section {
+            padding: 80px 0;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Pricing section */
+        .pricing-section {
+            padding: 80px 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.5s ease;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--primary-color);
+            transform: scale(1.05);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(74, 107, 255, 0.3);
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
+        }
+        
+        .pricing-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-bottom-left-radius: 16px;
+            z-index: 10;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .pricing-card.popular::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 50px 50px 0;
+            border-color: transparent var(--primary-color) transparent transparent;
+            z-index: 9;
+        }
+        
+        .pricing-header {
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .pricing-features {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .pricing-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .pricing-feature i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+        
+        .pricing-feature.disabled {
+            opacity: 0.5;
+        }
+        
+        /* Footer */
+        .app-footer {
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 3rem 0 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-social {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .footer-social a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-social a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .demo-options, .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .glow-sphere {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-social {
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+        }
+        
+        /* Logo animations */
+        @keyframes sectionLogoPulse {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(74, 107, 255, 0.7));
+                transform: translateZ(20px) rotate(-2deg);
+            }
+            100% {
+                filter: drop-shadow(0 0 15px rgba(74, 107, 255, 0.9));
+                transform: translateZ(20px) rotate(2deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- New 3D Animated Background -->
+    <div class="animated-background">
+        <div class="particle-container" id="particles"></div>
+        <div class="grid-lines"></div>
+        <div class="glow-sphere" style="top: 20%; left: 10%;"></div>
+        <div class="glow-sphere" style="top: 60%; left: 70%; animation-delay: -7s;"></div>
+        <div class="nebula-effect"></div>
+        <div class="warp-lines" id="warp-lines"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize animated background
+            createAnimatedBackground();
+            
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Demo option click handlers
+            document.querySelectorAll('.demo-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const demoUrl = this.getAttribute('data-demo-url');
+                    if (demoUrl) {
+                        window.location.href = demoUrl;
+                    }
+                });
+            });
+            
+            // Enhanced card effect
+            document.querySelectorAll('.card-3d').forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-5px)';
+                    }, 50);
+                });
+            });
+        });
+        
+        // Function to create the animated background
+        function createAnimatedBackground() {
+            // Create particles
+            const particleContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // Random opacity
+                particle.style.opacity = (Math.random() * 0.5 + 0.1).toString();
+                
+                // Animation
+                const duration = Math.random() * 20 + 20;
+                const delay = Math.random() * 10;
+                
+                // Apply animation with keyframes dynamically
+                const style = document.createElement('style');
+                const endX = Math.random() * 20 - 10;
+                const endY = Math.random() * 20 - 10;
+                
+                style.textContent = `
+                    @keyframes particle-float-${i} {
+                        0% { transform: translate(0, 0) scale(1); }
+                        50% { transform: translate(${endX}px, ${endY}px) scale(${Math.random() * 0.5 + 0.8}); }
+                        100% { transform: translate(${-endX}px, ${-endY}px) scale(1); }
+                    }
+                `;
+                
+                particle.style.animation = `particle-float-${i} ${duration}s ease-in-out ${delay}s infinite alternate`;
+                
+                document.head.appendChild(style);
+                particleContainer.appendChild(particle);
+            }
+            
+            // Create warp lines
+            const warpLinesContainer = document.getElementById('warp-lines');
+            const warpLineCount = 20;
+            
+            for (let i = 0; i < warpLineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('warp-line');
+                
+                // Random width between 30% and 80% of screen width
+                const width = Math.random() * 50 + 30;
+                line.style.width = `${width}%`;
+                
+                // Random position
+                const posX = Math.random() * (100 - width);
+                line.style.left = `${posX}%`;
+                
+                // Animation delay
+                const delay = Math.random() * 8;
+                line.style.animationDelay = `${delay}s`;
+                
+                warpLinesContainer.appendChild(line);
+            }
+        }
+    </script>
+</body>
+</html>
+
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('video_analysis') }}">TactiVision™</a></li>
+                <li><a href="{{ url_for('formation_analysis') }}">FormaLens™</a></li>
+                <li><a href="{{ url_for('chat_assistant') }}">TaktiChat™</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="demo-btn" class="btn btn-primary btn-glow">Try Demo</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section id="hero" class="hero-section">
+                <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="hero-logo-img">
+                        <div class="hero-logo-sparkle"></div>
+                        <div class="hero-logo-sparkle"></div>
+                        <div class="hero-logo-sparkle"></div>
+                        <div class="hero-logo-sparkle"></div>
+                        <div class="hero-logo-sparkle"></div>
+                        <div class="hero-logo-effect"></div>
+                    </div>
+                    <h1 class="hero-title">See the Pressure. <span class="highlight">Change the Game</span></h1>                  
+                    <p class="hero-subtitle"> Inspired by the concept of pressing intensity, our logo reflects the dynamic flow of pressure on the pitch—where data meets decision.</p>                    
+                    <div class="hero-cta">
+                        <a href="#demo-options" class="btn btn-primary btn-large btn-glow">Try Demo Now</a>
+                        <a href="#pricing" class="btn btn-secondary">View Plans</a>
+                    </div>
+                </div>
+                <div class="hero-visual" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="300">
+                    <div class="hero-image">
+                        <img src="{{ url_for('static', filename='images/hero-visual.png') }}" alt="TakiTech AI Analytics">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demo Options Section -->
+            <section id="demo-options" class="demo-options-section">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-logo">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="section-logo-img">
+                    </div>
+                    <h2>Experience TakiTech</h2>
+                    <p>Choose a demo to see our AI in action</p>
+                </div>
+                
+                <div class="demo-options">
+                    <div class="demo-option card-3d" data-aos="fade-up" data-aos-delay="100" data-demo-url="{{ url_for('video_analysis') }}">
+                        <div class="demo-option-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3> TactiVision™ Demo</h3>
+                        <p>See how our AI analyzes match footage to identify patterns, track player movements, and provide tactical insights.</p>
+                        <button class="btn btn-primary btn-glow">Start Demo</button>
+                    </div>
+                    
+                    <div class="demo-option card-3d" data-aos="fade-up" data-aos-delay="200" data-demo-url="{{ url_for('formation_analysis') }}">
+                        <div class="demo-option-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>FormaLens™ Demo</h3>
+                        <p>Explore how our AI analyzes team formations, player positioning, and provides tactical recommendations.</p>
+                        <button class="btn btn-primary btn-glow">Start Demo</button>
+                    </div>
+                    
+                    <div class="demo-option card-3d" data-aos="fade-up" data-aos-delay="300" data-demo-url="{{ url_for('chat_assistant') }}">
+                        <div class="demo-option-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>TaktiChat™ Demo</h3>
+                        <p>Interact with our football analytics AI to get instant answers to your tactical questions and performance inquiries.</p>
+                        <button class="btn btn-primary btn-glow">Start Demo</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How It Works Section -->
+            <section id="how-it-works" class="how-it-works-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>How TakiTech Works</h2>
+                    <p>A simple process that delivers powerful insights</p>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step card-3d" data-aos="fade-up" data-aos-delay="100">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Upload Your Data</h3>
+                            <p>Upload match videos or formation data to our secure platform</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step card-3d" data-aos="fade-up" data-aos-delay="200">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>AI Processing</h3>
+                            <p>Our advanced AI analyzes your data using cutting-edge algorithms</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step card-3d" data-aos="fade-up" data-aos-delay="300">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Get Actionable Insights</h3>
+                            <p>Receive detailed reports, visualizations, and recommendations</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials Section -->
+            <section id="testimonials" class="testimonials-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>What Coaches Say</h2>
+                    <p>Trusted by football professionals worldwide</p>
+                </div>
+                
+                <div class="testimonials-container">
+                    <div class="testimonial card-3d" data-aos="fade-up" data-aos-delay="200">
+                        <div class="testimonial-content">
+                            <p>"The formation analysis tool has helped us identify tactical weaknesses we never noticed before. It's like having an extra analyst on the team."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-image"></div>
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <p>Performance Director, Arsenal Women</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="about-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>About TakiTech</h2>
+                    <p>Pioneering AI in football analytics</p>
+                </div>
+                
+                <div class="about-content">
+                    <div class="about-text card-3d" data-aos="fade-up" data-aos-delay="100">
+                        <p>TakiTech was founded by a team of football analysts and AI experts with a shared vision: to make advanced analytics accessible to teams at all levels.</p>
+                        <p>Our platform combines cutting-edge artificial intelligence with deep football knowledge to deliver insights that were previously available only to elite clubs with massive analytics departments.</p>
+                        <p>We're committed to continuous innovation, constantly improving our algorithms and adding new features based on feedback from coaches and analysts worldwide.</p>
+                    </div>
+                    <div class="about-stats" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat card-3d">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Teams Using TakiTech</div>
+                        </div>
+                        <div class="stat card-3d">
+                            <div class="stat-number">30,000+</div>
+                            <div class="stat-label">Matches Analyzed</div>
+                        </div>
+                        <div class="stat card-3d">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">Customer Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing Section -->
+            <section id="pricing" class="pricing-section">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-logo">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="section-logo-img">
+                    </div>
+                    <h2>Choose Your Plan</h2>
+                    <p>Flexible options to suit your team's needs</p>
+                </div>
+                
+                <div class="pricing-grid">
+                    <!-- Free Plan -->
+                    <div class="pricing-card card-3d" data-aos="fade-up" data-aos-delay="100">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Free</h3>
+                            <div class="pricing-price">$0</div>
+                            <div class="pricing-period">Forever</div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Basic video analysis (up to 5 minutes)</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Formation analysis (up to 3 formations)</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Limited AI assistant queries (10/month)</span>
+                            </div>
+                            <div class="pricing-feature disabled">
+                                <i class="fas fa-times"></i>
+                                <span>Advanced analytics</span>
+                            </div>
+                            <div class="pricing-feature disabled">
+                                <i class="fas fa-times"></i>
+                                <span>Team collaboration</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-glow">Get Started</button>
+                    </div>
+                    
+                    <!-- Pro Plan -->
+                    <div class="pricing-card card-3d popular" data-aos="fade-up" data-aos-delay="200">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Pro</h3>
+                            <div class="pricing-price">$49</div>
+                            <div class="pricing-period">per month</div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Advanced video analysis (up to 30 minutes)</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited formation analysis</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited AI assistant queries</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Advanced analytics & insights</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Team collaboration (up to 5 users)</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-glow">Subscribe Now</button>
+                    </div>
+                    
+                    <!-- Enterprise Plan -->
+                    <div class="pricing-card card-3d" data-aos="fade-up" data-aos-delay="300">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Enterprise</h3>
+                            <div class="pricing-price">Custom</div>
+                            <div class="pricing-period">Contact us</div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited video analysis</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Custom formation analysis</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Priority AI assistant support</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Custom analytics & reporting</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited team collaboration</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-glow">Contact Sales</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="footer-logo-img">
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="{{ url_for('video_analysis') }}">TactiVision™</a></li>
+                            <li><a href="{{ url_for('formation_analysis') }}">Formation Analysis</a></li>
+                            <li><a href="{{ url_for('chat_assistant') }}">AI Assistant</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#about">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TakiTech. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing...</div>
+        </div>
+
+        <!-- Alerts Container -->
+        <div id="alerts-container" class="alerts-container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Demo option click handlers
+            document.querySelectorAll('.demo-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const demoUrl = this.getAttribute('data-demo-url');
+                    if (demoUrl) {
+                        window.location.href = demoUrl;
+                    }
+                });
+            });
+            
+            // Enhanced card effect
+            document.querySelectorAll('.card-3d').forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

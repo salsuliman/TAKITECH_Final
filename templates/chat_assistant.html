@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant | TakiTech</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        /* Modern tech-focused styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4a6bff, #6c5ce7);
+            --secondary-gradient: linear-gradient(135deg, #00b894, #00cec9);
+            --accent-gradient: linear-gradient(135deg, #ff7675, #d63031);
+            --dark-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --primary-color: #4a6bff;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Base container style */
+        .app-container {
+            position: relative;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            overflow: hidden;
+        }
+        
+        /* NEW ANIMATED BACKGROUND */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(74, 107, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+        
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) translateZ(-100px);
+            animation: grid-movement 20s linear infinite;
+        }
+        
+        @keyframes grid-movement {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+        
+        .glow-sphere {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.2) 0%, rgba(74, 107, 255, 0.1) 40%, rgba(74, 107, 255, 0) 70%);
+            filter: blur(30px);
+            opacity: 0.6;
+            animation: sphere-float 15s ease-in-out infinite;
+        }
+        
+        @keyframes sphere-float {
+            0% { transform: translate(10%, 20%) scale(1); }
+            50% { transform: translate(40%, 40%) scale(1.5); }
+            100% { transform: translate(10%, 20%) scale(1); }
+        }
+        
+        .nebula-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M25,50 C25,37.5 37.5,25 50,25 C62.5,25 75,37.5 75,50 C75,62.5 62.5,75 50,75 C37.5,75 25,62.5 25,50 Z" stroke="rgba(74, 107, 255, 0.1)" stroke-width="0.5" fill="none"/></svg>');
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        
+        .warp-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .warp-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(74, 107, 255, 0.5), transparent);
+            opacity: 0;
+            animation: warp 8s linear infinite;
+        }
+        
+        @keyframes warp {
+            0% {
+                transform: translateY(100vh) scaleX(0.1);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.5;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) scaleX(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Enhanced card effects */
+        .card-3d, .feature-card, .step, .sample-result {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-3d::before, .feature-card::before, .step::before, .sample-result::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 107, 255, 0.1) 0%, rgba(74, 107, 255, 0) 70%);
+            transform: rotate(0deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .card-3d:hover, .feature-card:hover, .step:hover, .sample-result:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .card-3d:hover::before, .feature-card:hover::before, .step:hover::before, .sample-result:hover::before {
+            opacity: 1;
+            animation: card-glow 5s infinite linear;
+        }
+        
+        @keyframes card-glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Animated Background -->
+        <div class="animated-background">
+            <div class="grid-lines"></div>
+            <div class="particle-container" id="particles-js"></div>
+            <div class="glow-sphere" style="top: 20%; left: 20%;"></div>
+            <div class="glow-sphere" style="top: 60%; left: 70%;"></div>
+            <div class="nebula-effect"></div>
+            <div class="warp-lines" id="warp-lines"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TakiTech Logo" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('video_analysis') }}">Video Analysis</a></li>
+                <li><a href="{{ url_for('formation_analysis') }}">Formation Analysis</a></li>
+                <li><a href="{{ url_for('chat_assistant') }}" class="active">AI Assistant</a></li>
+                <li><a href="{{ url_for('index') }}#about">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="demo-btn" class="btn btn-primary">Request Demo</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Chat Assistant Tool -->
+            <section class="tool-section">
+                <div class="tool-container" data-aos="fade-up">
+                    <div class="tool-header">
+                        <h2>Chat with Our Football AI</h2>
+                        <p>Ask questions about tactics, performance, and strategy to get AI-powered insights</p>
+                    </div>
+                    
+                    <div class="chat-container">
+                        <div class="chat-sidebar" data-aos="fade-right" data-aos-delay="100">
+                            <div class="sidebar-header">
+                                <h3>Topics</h3>
+                            </div>
+                            <div class="topic-list">
+                                <div class="topic active">
+                                    <i class="fas fa-comments"></i>
+                                    <span>General Chat</span>
+                                </div>
+                                <div class="topic">
+                                    <i class="fas fa-video"></i>
+                                    <span>Video Analysis</span>
+                                </div>
+                                <div class="topic">
+                                    <i class="fas fa-users"></i>
+                                    <span>Formation Analysis</span>
+                                </div>
+                                <div class="topic">
+                                    <i class="fas fa-running"></i>
+                                    <span>Player Performance</span>
+                                </div>
+                                <div class="topic">
+                                    <i class="fas fa-chess"></i>
+                                    <span>Tactical Insights</span>
+                                </div>
+                            </div>
+                            <div class="sidebar-header">
+                                <h3>Suggested Questions</h3>
+                            </div>
+                            <div class="suggested-questions">
+                                <div class="suggested-question">
+                                    <p>What are the key metrics for evaluating pressing effectiveness?</p>
+                                </div>
+                                <div class="suggested-question">
+                                    <p>How can I improve my team's transition from defense to attack?</p>
+                                </div>
+                                <div class="suggested-question">
+                                    <p>What formation works best against a 4-3-3?</p>
+                                </div>
+                                <div class="suggested-question">
+                                    <p>How do I analyze player movement off the ball?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-main" data-aos="fade-up" data-aos-delay="200">
+                            <div class="chat-header">
+                                <div class="chat-title">
+                                    <i class="fas fa-robot"></i>
+                                    <span>TakiTech AI Assistant</span>
+                                </div>
+                                <div class="chat-actions">
+                                    <button class="btn btn-icon" title="Clear Chat">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-messages">
+                                <div class="message bot">
+                                    <div class="message-avatar">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="message-bubble">
+                                        <p>Hello! I'm your TakiTech AI Assistant. I can help you with football analytics, tactical questions, and performance insights. What would you like to know today?</p>
+                                    </div>
+                                    <div class="message-time">10:00 AM</div>
+                                </div>
+                                
+                                <!-- Messages will be added here dynamically -->
+                            </div>
+                            
+                            <div class="chat-input">
+                                <textarea placeholder="Ask a question about football tactics, analysis, or performance..." id="chat-input"></textarea>
+                                <button class="send-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-context" data-aos="fade-left" data-aos-delay="300">
+                            <div class="context-header">
+                                <h3>Analysis Context</h3>
+                                <p>Connect your chat with previous analyses</p>
+                            </div>
+                            
+                            <div class="context-options">
+                                <div class="context-option">
+                                    <input type="checkbox" id="video-context" class="context-checkbox">
+                                    <label for="video-context">Include Video Analysis</label>
+                                    </select>
+                                </div>
+                                
+                                <div class="context-option">
+                                    <input type="checkbox" id="formation-context" class="context-checkbox">
+                                    <label for="formation-context">Include Formation Analysis</label>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Features Section -->
+            <section class="features-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>AI Assistant Features</h2>
+                    <p>Get expert insights at your fingertips</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Football Knowledge</h3>
+                        <p>Access a vast database of football tactics, strategies, and historical data to inform your decisions.</p>
+                    </div>
+                    
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Performance Analysis</h3>
+                        <p>Get insights on player and team performance metrics, strengths, weaknesses, and improvement areas.</p>
+                    </div>
+                    
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h3>Tactical Recommendations</h3>
+                        <p>Receive AI-generated tactical suggestions tailored to your team's specific situation and opponents.</p>
+                    </div>
+                    
+                </div>
+            </section>
+
+            <!-- How It Works Section -->
+            <section class="how-it-works-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>How the AI Assistant Works</h2>
+                    <p>Advanced AI technology at your service</p>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step" data-aos="fade-right" data-aos-delay="100">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Ask Your Question</h3>
+                            <p>Type your football-related question in the chat interface</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step" data-aos="fade-right" data-aos-delay="200">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>AI Processing</h3>
+                            <p>Our AI analyzes your question using advanced natural language processing</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step" data-aos="fade-right" data-aos-delay="300">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Knowledge Integration</h3>
+                            <p>The system combines football expertise with your specific context</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step" data-aos="fade-right" data-aos-delay="400">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Receive Insights</h3>
+                            <p>Get detailed, actionable answers to help improve your team's performance</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sample Conversations Section -->
+            <section class="sample-results-section">
+                <div class="section-header" data-aos="fade-up">
+                    <h2>Sample Conversations</h2>
+                    <p>See examples of how our AI Assistant can help you</p>
+                </div>
+                
+                <div class="sample-results-container">
+                    <div class="sample-result" data-aos="fade-up" data-aos-delay="100">
+                        <h3>Tactical Questions</h3>
+                        <div class="sample-conversation">
+                            <div class="sample-message user">
+                                <p>What's the best way to counter a high pressing team?</p>
+                            </div>
+                            <div class="sample-message bot">
+                                <p>To counter a high pressing team, consider these strategies:</p>
+                                <ol>
+                                    <li><strong>Direct play:</strong> Bypass the press with long balls to forwards or wide areas</li>
+                                    <li><strong>Quick transitions:</strong> Use one-touch passing to move the ball quickly before the press can set</li>
+                                    <li><strong>Goalkeeper involvement:</strong> Use your goalkeeper as an extra passing option</li>
+                                    <li><strong>Positional overloads:</strong> Create numerical advantages in specific areas to break the press</li>
+                                    <li><strong>Switch play:</strong> Quickly change the point of attack to exploit space on the opposite flank</li>
+                                </ol>
+                                <p>The most effective approach depends on your team's strengths and the specific pressing style of your opponent.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sample-result" data-aos="fade-up" data-aos-delay="200">
+                        <h3>Performance Analysis</h3>
+                        <div class="sample-conversation">
+                            <div class="sample-message user">
+                                <p>How can I evaluate my team's defensive compactness?</p>
+                            </div>
+                            <div class="sample-message bot">
+                                <p>To evaluate defensive compactness, focus on these key metrics:</p>
+                                <ol>
+                                    <li><strong>Defensive block dimensions:</strong> Measure the width and length of your defensive shape</li>
+                                    <li><strong>Inter-player distances:</strong> Track the average distance between adjacent players</li>
+                                    <li><strong>PPDA (Passes Per Defensive Action):</strong> Higher values indicate less intense pressing</li>
+                                    <li><strong>Defensive line height:</strong> Measure how high or deep your defensive line positions</li>
+                                    <li><strong>Recovery time:</strong> How quickly players return to compact shape after transitions</li>
+                                </ol>
+                                <p>Optimal compactness varies by tactical approach, but generally, maintaining under 12 meters between adjacent players in the defensive block is considered effective.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Taki</span><span class="logo-tech">Tech</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="{{ url_for('video_analysis') }}">Video Analysis</a></li>
+                            <li><a href="{{ url_for('formation_analysis') }}">Formation Analysis</a></li>
+                            <li><a href="{{ url_for('chat_assistant') }}">AI Assistant</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="{{ url_for('index') }}#about">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TakiTech. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- Demo Modal -->
+        <div id="demo-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="modal-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Request a Demo</h3>
+                <form id="demo-form" class="demo-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="team" name="team" placeholder="Team/Organization">
+                    </div>
+                    <div class="form-group">
+                        <select id="interest" name="interest">
+                            <option value="video">Video Analysis</option>
+                            <option value="formation">Formation Analysis</option>
+                            <option value="ai" selected>AI Assistant</option>
+                            <option value="all">All Features</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Request Demo</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing...</div>
+        </div>
+
+        <!-- Alerts Container -->
+        <div id="alerts-container" class="alerts-container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Particle.js for animated background -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Create warp lines
+        function createWarpLines() {
+            const warpContainer = document.getElementById('warp-lines');
+            const lineCount = 20;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'warp-line';
+                
+                // Random properties
+                const width = Math.random() * 50 + 50; // 50-100% width
+                const left = Math.random() * 100; // 0-100% left position
+                const delay = Math.random() * 5; // 0-5s delay
+                
+                line.style.width = width + '%';
+                line.style.left = left + '%';
+                line.style.animationDelay = delay + 's';
+                
+                warpContainer.appendChild(line);
+            }
+        }
+        
+        // Initialize particle.js
+        function initParticles() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: {
+                        value: 40,
+                        density: {
+                            enable: true,
+                            value_area: 800
+                        }
+                    },
+                    color: {
+                        value: '#4a6bff'
+                    },
+                    shape: {
+                        type: 'circle',
+                    },
+                    opacity: {
+                        value: 0.5,
+                        random: true,
+                    },
+                    size: {
+                        value: 3,
+                        random: true,
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: '#4a6bff',
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1,
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        out_mode: 'out',
+                    }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: 'bubble'
+                        },
+                        onclick: {
+                            enable: true,
+                            mode: 'push'
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        bubble: {
+                            distance: 200,
+                            size: 6,
+                            duration: 0.4,
+                            opacity: 0.6,
+                        },
+                        push: {
+                            particles_nb: 3
+                        }
+                    }
+                },
+                retina_detect: true
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createWarpLines();
+            if (typeof particlesJS !== 'undefined') {
+                initParticles();
+            }
+            
+            // Set up demo modal
+            const demoBtn = document.getElementById('demo-btn');
+            const demoModal = document.getElementById('demo-modal');
+            const closeModal = document.querySelector('.close-modal');
+            
+            demoBtn.addEventListener('click', function() {
+                demoModal.classList.add('active');
+            });
+            
+            closeModal.addEventListener('click', function() {
+                demoModal.classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === demoModal) {
+                    demoModal.classList.remove('active');
+                }
+            });
+            
+            // Handle chat interaction
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.querySelector('.send-btn');
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            function addMessage(content, isUser = false) {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const timeStr = `${hours}:${minutes}`;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isUser ? 'message user' : 'message bot';
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                
+                const avatarIcon = document.createElement('i');
+                avatarIcon.className = isUser ? 'fas fa-user' : 'fas fa-robot';
+                avatarDiv.appendChild(avatarIcon);
+                
+                const bubbleDiv = document.createElement('div');
+                bubbleDiv.className = 'message-bubble';
+                
+                const textP = document.createElement('p');
+                textP.textContent = content;
+                bubbleDiv.appendChild(textP);
+                
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'message-time';
+                timeDiv.textContent = timeStr;
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(bubbleDiv);
+                messageDiv.appendChild(timeDiv);
+                
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    chatInput.value = '';
+                    
+                    // Simulate bot response (replace with actual API call in production)
+                    setTimeout(() => {
+                        addMessage('I understand your question about ' + message.toLowerCase() + '. Let me analyze this and provide you with insights based on our football analytics data.');
+                    }, 1000);
+                }
+            }
+            
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Handle context checkboxes
+            const videoCheckbox = document.getElementById('video-context');
+            const formationCheckbox = document.getElementById('formation-context');
+            const videoSelect = document.getElementById('video-analysis-select');
+            const formationSelect = document.getElementById('formation-analysis-select');
+            
+            videoCheckbox.addEventListener('change', function() {
+                videoSelect.disabled = !this.checked;
+            });
+            
+            formationCheckbox.addEventListener('change', function() {
+                formationSelect.disabled = !this.checked;
+            });
+            
+            // Handle suggested questions
+            const suggestedQuestions = document.querySelectorAll('.suggested-question');
+            suggestedQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const questionText = this.querySelector('p').textContent;
+                    chatInput.value = questionText;
+                    chatInput.focus();
+                });
+            });
+            
+            // Handle topics
+            const topics = document.querySelectorAll('.topic');
+            topics.forEach(topic => {
+                topic.addEventListener('click', function() {
+                    topics.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
